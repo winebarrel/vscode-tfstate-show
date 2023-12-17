@@ -1,6 +1,6 @@
 # tfstate-show
 
-[![build](https://github.com/winebarrel/vscode-tfstate-sho/actions/workflows/build.yml/badge.svg)](https://github.com/winebarrel/vscode-tfstate-sho/actions/workflows/ci.yml)
+[![CI](https://github.com/winebarrel/vscode-tfstate-show/actions/workflows/ci.yml/badge.svg)](https://github.com/winebarrel/vscode-tfstate-show/actions/workflows/ci.yml)
 
 Run `terraform state show` in VSCode.
 
