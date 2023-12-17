@@ -11,9 +11,9 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
   const document = activeTextEditor.document;
 
   for (let i = lineNum + 1; i--; i > 0) {
-    const line = document.lineAt(i).text;
+    const line = document.lineAt(i).text.trimEnd();
 
-    if (/^[}\s]/.test(line)) {
+    if (line === "" || line === "}" || /^\s/.test(line)) {
       continue;
     }
 
