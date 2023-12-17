@@ -87,9 +87,10 @@ async function tfStateShow() {
   output.clear();
   output.show(true);
 
-  for (const r of list) {
-    const state = await terraformStateShow(r, cwd);
-    output.append(state);
+  const states = await Promise.all(list.map((r) => terraformStateShow(r, cwd)));
+
+  for (const s of states) {
+    output.append(s);
   }
 }
 
