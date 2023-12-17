@@ -76,31 +76,40 @@ async function tfStateShow() {
     return;
   }
 
-
   const cwd = dirname(activeTextEditor.document.fileName);
+  const list = await terraformStateList(res, cwd);
 
-  try {
-    const list = await terraformStateList(res, cwd);
+  if (list.length === 0) {
+    vscode.window.showWarningMessage("Terraform resource not found");
+    return;
+  }
 
-    if (list.length === 0) {
-      vscode.window.showWarningMessage("Terraform resource not found");
-      return;
-    }
+  output.clear();
+  output.show(true);
 
-    output.clear();
-    output.show(true);
-
-    for (const r of list) {
-      const state = await terraformStateShow(r, cwd);
-      output.append(state);
-    }
-  } catch (e) {
-    vscode.window.showErrorMessage(`${e}`);
+  for (const r of list) {
+    const state = await terraformStateShow(r, cwd);
+    output.append(state);
   }
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('tfstate-show.tfStateShow', tfStateShow);
+  let disposable = vscode.commands.registerCommand('tfstate-show.tfStateShow', async () => {
+    try {
+      vscode.window.withProgress({
+        location: vscode.ProgressLocation.Window,
+        cancellable: false,
+        title: 'Loading tfstate'
+      }, async (progress) => {
+        progress.report({ increment: 0 });
+        await tfStateShow();
+        progress.report({ increment: 100 });
+      });
+    } catch (e) {
+      vscode.window.showErrorMessage(`${e}`);
+    }
+  });
+
   context.subscriptions.push(disposable);
 }
 
