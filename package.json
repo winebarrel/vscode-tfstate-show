@@ -14,10 +14,19 @@
   "contributes": {
     "commands": [
       {
-        "command": "tfstate-show.helloWorld",
-        "title": "Hello World"
+        "command": "tfstate-show.tfStateShow",
+        "title": "terraform state show"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "tfstate-show.tfStateShow",
+          "when": "resourceExtname == .tf",
+          "group": "tfstate-show@1"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
