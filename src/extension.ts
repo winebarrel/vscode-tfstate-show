@@ -95,19 +95,21 @@ async function tfStateShow() {
 
 export async function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('tfstate-show.tfStateShow', async () => {
-    try {
-      vscode.window.withProgress({
-        location: vscode.ProgressLocation.Window,
-        cancellable: false,
-        title: 'Loading tfstate'
-      }, async (progress) => {
-        progress.report({ increment: 0 });
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Window,
+      cancellable: false,
+      title: 'Loading tfstate'
+    }, async (progress) => {
+      progress.report({ increment: 0 });
+
+      try {
         await tfStateShow();
-        progress.report({ increment: 100 });
-      });
-    } catch (e) {
-      vscode.window.showErrorMessage(`${e}`);
-    }
+      } catch (e) {
+        vscode.window.showErrorMessage(`${e}`);
+      }
+
+      progress.report({ increment: 100 });
+    });
   });
 
   context.subscriptions.push(disposable);
