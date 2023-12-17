@@ -13,7 +13,7 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
   for (let i = lineNum + 1; i--; i > 0) {
     const line = document.lineAt(i).text;
 
-    if (/^(?:}|\s)/.test(line)) {
+    if (/^[}\s]/.test(line)) {
       continue;
     }
 
