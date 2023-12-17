@@ -13,11 +13,7 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
   for (let i = lineNum + 1; i--; i > 0) {
     const line = document.lineAt(i).text.trimEnd();
 
-    if (line === "" || line === "}" || /^\s/.test(line)) {
-      continue;
-    }
-
-    let m;
+    let m: RegExpMatchArray | null;
 
     if (m = line.match(/^(resource|data)\s+"([^"]+)"\s+"([^"]+)"\s+{/)) {
       const blkName = m[1];
@@ -35,8 +31,6 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
       const modName = m[1];
       return `module.${modName}`;
     }
-
-    return null;
   }
 
   return null;
