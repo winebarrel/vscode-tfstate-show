@@ -10,25 +10,33 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
   const lineNum = activeTextEditor.selection.active.line;
   const document = activeTextEditor.document;
 
-  for (let i = lineNum; i--; i >= 0) {
+  for (let i = lineNum + 1; i--; i > 0) {
     const line = document.lineAt(i).text;
-    const m = line.match(/^\s*(resource|data)\s+"([^"]+)"\s+"([^"]+)"\s*{/);
 
-    if (!m) {
+    if (/^(?:}|\s)/.test(line)) {
       continue;
     }
 
-    const blkName = m[1];
-    const resType = m[2];
-    const resName = m[3];
+    let m;
 
-    let res = `${resType}.${resName}`;
+    if (m = line.match(/^(resource|data)\s+"([^"]+)"\s+"([^"]+)"\s+{/)) {
+      const blkName = m[1];
+      const resType = m[2];
+      const resName = m[3];
 
-    if (blkName === "data") {
-      res = `data.${res}`;
+      let res = `${resType}.${resName}`;
+
+      if (blkName === "data") {
+        res = `${blkName}.${res}`;
+      }
+
+      return res;
+    } else if (m = line.match(/^module\s+"([^"]+)"\s+{/)) {
+      const modName = m[1];
+      return `module.${modName}`;
     }
 
-    return res;
+    return null;
   }
 
   return null;
