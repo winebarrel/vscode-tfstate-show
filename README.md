@@ -1,6 +1,7 @@
 # tfstate-show
 
 [![CI](https://github.com/winebarrel/vscode-tfstate-show/actions/workflows/ci.yml/badge.svg)](https://github.com/winebarrel/vscode-tfstate-show/actions/workflows/ci.yml)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/winebarrel.tfstate-show)](https://marketplace.visualstudio.com/items?itemName=winebarrel.tfstate-show)
 
 Run `terraform state show` in VSCode.
 
