@@ -5,6 +5,6 @@
 
 Run `terraform state show` in VSCode.
 
-![](https://github.com/winebarrel/vscode-tfstate-show/assets/117768/c8b3984f-6486-4ea0-9ac7-782de4c89a10)
+![](https://github.com/winebarrel/vscode-tfstate-show/assets/117768/d46b890f-3f1e-4f7f-9cb6-a43a08a87eaa)
 
 NOTE: Using [icooon-mono.com](https://icooon-mono.com/15006-document-search-icon-1/) icon.
