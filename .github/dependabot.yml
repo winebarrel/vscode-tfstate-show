@@ -10,6 +10,11 @@ updates:
           - "*"
     ignore:
       - dependency-name: "@types/node"
+        versions:
+          - "^19.0.0"
+      - dependency-name: "eslint"
+        versions:
+          - "^9.0.0"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
