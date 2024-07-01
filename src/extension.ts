@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
-import { dirname } from 'path';
+import * as vscode from "vscode";
+import { dirname } from "path";
 import * as util from "util";
 import * as childPprocess from "child_process"; // eslint-disable-line
 const exec = util.promisify(childPprocess.exec);
@@ -15,7 +15,7 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
 
     let m: RegExpMatchArray | null;
 
-    if (m = line.match(/^(resource|data)\s+"([^"]+)"\s+"([^"]+)"\s+{/)) {
+    if ((m = line.match(/^(resource|data)\s+"([^"]+)"\s+"([^"]+)"\s+{/))) {
       const blkName = m[1];
       const resType = m[2];
       const resName = m[3];
@@ -27,7 +27,7 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
       }
 
       return res;
-    } else if (m = line.match(/^module\s+"([^"]+)"\s+{/)) {
+    } else if ((m = line.match(/^module\s+"([^"]+)"\s+{/))) {
       const modName = m[1];
       return `module.${modName}`;
     }
@@ -37,10 +37,12 @@ function findResource(activeTextEditor: vscode.TextEditor): string | null {
 }
 
 async function terraformStateList(res: string, cwd: string): Promise<string[]> {
-  const out = (await exec(`terraform state list '${res}'`, {
-    cwd: cwd,
-    env: { ...process.env, TF_CLI_ARGS: '-no-color' },
-  })).stdout;
+  const out = (
+    await exec(`terraform state list '${res}'`, {
+      cwd: cwd,
+      env: { ...process.env, TF_CLI_ARGS: "-no-color" },
+    })
+  ).stdout;
 
   const list = [];
 
@@ -55,11 +57,39 @@ async function terraformStateList(res: string, cwd: string): Promise<string[]> {
   return list;
 }
 
+async function terraformInit(cwd: string): Promise<string> {
+  const out = (
+    await exec(`terraform init`, {
+      cwd: cwd,
+      env: { ...process.env, TF_CLI_ARGS: "-no-color" },
+    })
+  ).stdout;
+
+  return out;
+}
+
+async function tfInit() {
+  const activeTextEditor = vscode.window.activeTextEditor;
+
+  if (!activeTextEditor) {
+    return;
+  }
+
+  const cwd = dirname(activeTextEditor.document.fileName);
+  const init = await terraformInit(cwd);
+
+  output.clear();
+  output.show(true);
+  output.append(init);
+}
+
 async function terraformStateShow(res: string, cwd: string): Promise<string> {
-  const out = (await exec(`terraform state show '${res}'`, {
-    cwd: cwd,
-    env: { ...process.env, TF_CLI_ARGS: '-no-color' },
-  })).stdout;
+  const out = (
+    await exec(`terraform state show '${res}'`, {
+      cwd: cwd,
+      env: { ...process.env, TF_CLI_ARGS: "-no-color" },
+    })
+  ).stdout;
 
   return out;
 }
@@ -97,25 +127,57 @@ async function tfStateShow() {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('tfstate-show.tfStateShow', async () => {
-    vscode.window.withProgress({
-      location: vscode.ProgressLocation.Window,
-      cancellable: false,
-      title: 'Loading tfstate'
-    }, async (progress) => {
-      progress.report({ increment: 0 });
+  const initDisposable = vscode.commands.registerCommand(
+    "tfstate-show.tfInit",
+    async () => {
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Window,
+          cancellable: false,
+          title: "Loading tfstate",
+        },
+        async (progress) => {
+          progress.report({ increment: 0 });
 
-      try {
-        await tfStateShow();
-      } catch (e) {
-        vscode.window.showErrorMessage(`${e}`);
-      }
+          try {
+            await tfInit();
+          } catch (e) {
+            vscode.window.showErrorMessage(`${e}`);
+          }
 
-      progress.report({ increment: 100 });
-    });
-  });
+          progress.report({ increment: 100 });
+        }
+      );
+    }
+  );
 
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(initDisposable);
+
+  const stateShowDisposable = vscode.commands.registerCommand(
+    "tfstate-show.tfStateShow",
+    async () => {
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Window,
+          cancellable: false,
+          title: "Loading tfstate",
+        },
+        async (progress) => {
+          progress.report({ increment: 0 });
+
+          try {
+            await tfStateShow();
+          } catch (e) {
+            vscode.window.showErrorMessage(`${e}`);
+          }
+
+          progress.report({ increment: 100 });
+        }
+      );
+    }
+  );
+
+  context.subscriptions.push(stateShowDisposable);
 }
 
-export function deactivate() { }
+export function deactivate() {}
