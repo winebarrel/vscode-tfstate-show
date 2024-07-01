@@ -2,7 +2,7 @@
   "name": "tfstate-show",
   "displayName": "tfstate-show",
   "description": "Run \"terraform state show\" in VSCode.",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -24,6 +24,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "tfstate-show.tfInit",
+        "title": "terraform init"
+      },
+      {
         "command": "tfstate-show.tfStateShow",
         "title": "terraform state show"
       }
@@ -31,9 +35,14 @@
     "menus": {
       "editor/context": [
         {
-          "command": "tfstate-show.tfStateShow",
+          "command": "tfstate-show.tfInit",
           "when": "resourceExtname == .tf",
           "group": "tfstate-show@1"
+        },
+        {
+          "command": "tfstate-show.tfStateShow",
+          "when": "resourceExtname == .tf",
+          "group": "tfstate-show@2"
         }
       ]
     }
