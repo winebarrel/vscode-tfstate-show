@@ -12,6 +12,14 @@ updates:
       - dependency-name: "eslint"
         versions:
           - ">=10.0.0"
+      # TypeScript 7.0 is the Go-native rewrite and ships without a stable
+      # programmatic API (a new one is expected in 7.1). @typescript-eslint
+      # depends on that API and its peer range is still `>=4.8.4 <6.1.0`, so
+      # bumping to 7.x breaks `npm run lint`. Track typescript-eslint#10940 and
+      # drop this ignore once TS7 is supported.
+      - dependency-name: "typescript"
+        versions:
+          - ">=7.0.0"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
